@@ -15,24 +15,35 @@ mongoose.connect(link,{useNewUrlParser:true,useUnifiedTopology:true});
 mongoose.connection.once("open",()=>{console.log("connected to database");});
 
 async function fetch_login_data(req,res){
-    console.log(req.body);
-    let {email,password}=await req.body;
+    
+    const {email,password}=await req.body;
     const logindoc= await UserregisterModel.findOne({email,password});
     if(logindoc){
         console.log("login successfull");
+        res.status(200).json({
+          message:"Login successfull",
+          data:logindoc
+        });
     }
     else{
+      res.status(400).json({
+        message:"Login failed"
+      })
         console.log("Register please");
     }
-    res.json(logindoc);
 }
 async function fetch_data(req,res){
-   console.log(req.body);
-  let {first_name,last_name,email,password}=await req.body;
+   
+  const {first_name,last_name,email,password}=await req.body;
+  console.log(req.body);
   try{
-    let registerdoc= await  UserregisterModel.create({ first_name , last_name , email , password });
-    res.json(registerdoc);
+    const registerdoc= await  UserregisterModel.create({ first_name , last_name , email , password });
+    res.json({
+      message:"Register successfull",
+      data:registerdoc
+    });
   }
+
   catch(err){
     console.log(err);
   }
