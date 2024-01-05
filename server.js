@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(cors());
 app.post("/register",fetch_data);
 app.post('/login',fetch_login_data);
+const PORT=process.env.PORT || 5000;
 
 
 const link="mongodb+srv://mern_blog:O3iDjfR9CxBHNKRx@cluster0.xe0ijps.mongodb.net/?retryWrites=true&w=majority";
@@ -48,7 +49,7 @@ async function fetch_data(req,res){
     console.log(err);
   }
 }
-app.listen(5000,()=>{
+app.listen(PORT,()=>{
     console.log("server is running!");
 })
 
