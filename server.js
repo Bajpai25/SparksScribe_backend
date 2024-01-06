@@ -174,6 +174,7 @@ async function get_comment_by_id(req,res){
       })
     }
   }
+  
   catch(err){
     res.status(400).json({
       message:"data not received",
