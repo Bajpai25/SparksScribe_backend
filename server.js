@@ -3,6 +3,7 @@ const cors=require("cors");
 const app= express();
 const UserregisterModel=require("./models/register_model");
 const Blog=require("./models/Blog_model");
+const Comment_Model=require("./models/comment_model");
 const mongoose = require("mongoose");
 app.use(express.json());
 app.use(cors());
@@ -127,6 +128,104 @@ async function update_blog_data(req,res){
   catch(err){
     res.json({
       message:"Blog data not updated",
+      data:err
+    })
+  }
+}
+
+// craeting route for adding a comment to a blog
+
+app.post('/comment',add_comment);
+
+async function add_comment(req,res){
+  
+  const {comment_text,comment_by}=await req.body;
+
+  try{
+    const comment_data=await Comment_Model.create({comment_text,comment_by});
+
+    if(comment_data){
+      res.status(200).json({
+        message:"Comment added successfully",
+        data:comment_data
+      })
+    }
+  }
+  catch(err){
+    res.status(400).json({
+      message:"Comment not added",
+      data:err
+    })
+  }
+}
+// getting comment by id 
+
+app.get('/comment/:id',get_comment_by_id);
+
+async function get_comment_by_id(req,res){
+  const id=req.params.id;
+ 
+  try{
+    const comment_data= await Comment_Model.findById(id);
+    if(comment_data){
+      res.status(200).json({
+        message:"data received successfully",
+        data:comment_data
+      })
+    }
+  }
+  catch(err){
+    res.status(400).json({
+      message:"data not received",
+      data:err
+    })  
+  }
+}
+
+// creating route for changing the comment data by id
+
+app.put('/comment/:id',update_comment_data);
+
+async function update_comment_data(req,res){
+  const id=req.params.id;
+  const {comment_text,comment_by}=await req.body;
+  
+  try{
+    const comment_data=await Comment_Model.findByIdAndUpdate(id,{comment_text,comment_by},{new:true});
+    if(comment_data){
+      res.status(200).json({
+        message:"comments changed successfully",
+        data:comment_data
+      })
+    }
+  }
+  catch(err){
+    res.status(400).json({
+      message:"comments not changed",
+      data:err
+    })
+  }
+}
+
+// delete comment data by id
+
+app.delete('/comment/:id',delete_comment_data);
+
+async function delete_comment_data(req,res){
+  const id=req.params.id;
+  
+  try{
+    const comment_data=await Comment_Model.findByIdAndDelete(id);
+    if(comment_data){
+      res.status(200).json({
+        message:"data deleted successfully",
+        data:comment_data
+      })
+    }
+  }
+  catch(err){
+    res.status(400).json({
+      message:"data not deleted",
       data:err
     })
   }
